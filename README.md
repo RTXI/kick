@@ -3,7 +3,7 @@
 **Requirements:** None  
 **Limitations:** None  
 
-![EDIT THIS LINK](http://www.rtxi.org/wp-content/uploads/2012/03/kick.png)
+![Kick GUI](kick.png)
 
 This module sends a single value as a trigger or “kick” to another module. It outputs a user-specified value when triggered and a value of 0 otherwise. It can be used to manually mark events that a user sees in the data. It’s value in the HDF5 file will then serve as an event flag. This module can also be used to manually test other modules that require a trigger (such as those accepting input from the Spike Detector module). This module only sends a single “kick” at the specified delay after it is unpaused.
 
