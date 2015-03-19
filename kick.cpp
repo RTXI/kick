@@ -18,7 +18,7 @@
 
 #include <kick.h>
 #include <math.h>
-#include <QtGui>
+#include <qwhatsthis.h>
 
 extern "C" Plugin::Object *
 createRTXIPlugin(void)
@@ -39,7 +39,8 @@ static size_t num_vars = sizeof(vars) / sizeof(DefaultGUIModel::variable_t);
 kick::kick(void) :
   DefaultGUIModel("Kick", ::vars, ::num_vars)
 {
-  setWhatsThis(
+  QWhatsThis::add(
+      this,
       "<p><b>Kick:</b><br>/* A module that sends a single value as a trigger or "
         "\"kick\" to another module. It outputs a user-specified value when triggered "
         "and a value of 0 otherwise. It can be used to manually mark events that a user "
