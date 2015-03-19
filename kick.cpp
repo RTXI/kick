@@ -48,8 +48,9 @@ kick::kick(void) :
 
   createGUI(vars, num_vars);
   initParameters();
-  update( INIT);
+  update(INIT);
   refresh();
+  QTimer::singleShot(0, this, SLOT(resizeMe()));
 }
 
 kick::~kick(void)
