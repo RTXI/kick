@@ -18,102 +18,97 @@
 
 #include <kick.h>
 #include <math.h>
-#include <QtGui>
 
 extern "C" Plugin::Object *
 createRTXIPlugin(void)
 {
-  return new kick();
+	return new kick();
 }
 
 static DefaultGUIModel::variable_t vars[] =
-  {
-    { "Kick", "Kick signal", DefaultGUIModel::OUTPUT, },
-    { "Amplitude", "Amplitude", DefaultGUIModel::PARAMETER
-        | DefaultGUIModel::DOUBLE, },
-    { "Delay (ms)", "Delay (ms)", DefaultGUIModel::PARAMETER
-        | DefaultGUIModel::DOUBLE, }, };
+{
+	{ "Kick", "Kick signal", DefaultGUIModel::OUTPUT, },
+	{ "Amplitude", "Amplitude", DefaultGUIModel::PARAMETER | DefaultGUIModel::DOUBLE, },
+	{ "Delay (ms)", "Delay (ms)", DefaultGUIModel::PARAMETER | DefaultGUIModel::DOUBLE, }, 
+};
 
 static size_t num_vars = sizeof(vars) / sizeof(DefaultGUIModel::variable_t);
 
-kick::kick(void) :
-  DefaultGUIModel("Kick", ::vars, ::num_vars)
+kick::kick(void) : DefaultGUIModel("Kick", ::vars, ::num_vars)
 {
-  setWhatsThis(
-      "<p><b>Kick:</b><br>/* A module that sends a single value as a trigger or "
-        "\"kick\" to another module. It outputs a user-specified value when triggered "
-        "and a value of 0 otherwise. It can be used to manually mark events that a user "
-        "sees in the data or used to kick other modules that require a trigger (such as "
-        "those accepting spike detections).</p>");
+	setWhatsThis(
+		"<p><b>Kick:</b><br>/* A module that sends a single value as a trigger or "
+		"\"kick\" to another module. It outputs a user-specified value when triggered "
+		"and a value of 0 otherwise. It can be used to manually mark events that a user "
+		"sees in the data or used to kick other modules that require a trigger (such as "
+		"those accepting spike detections).</p>");
 
-  createGUI(vars, num_vars);
-  initParameters();
-  update(INIT);
-  refresh();
-  QTimer::singleShot(0, this, SLOT(resizeMe()));
+	createGUI(vars, num_vars);
+	initParameters();
+	update(INIT);
+	refresh();
+	QTimer::singleShot(0, this, SLOT(resizeMe()));
 }
 
 kick::~kick(void)
 {
 }
 
-void
-kick::execute(void)
+void kick::execute(void)
 {
-  systime = count * dt; // time in seconds
+	systime = count * dt; // time in seconds
 
-  switch (state)
-    {
-  case 0:
-    if (systime > delay)
-      {
-        output(0) = amplitude;
-        state = 1;
-      }
-    break;
-  case 1:
-    output(0) = 0;
-  default:
-    break;
-    }
+	switch (state)
+	{
+	case 0:
+		if (systime > delay)
+		{
+			output(0) = amplitude;
+			state = 1;
+		}
+		break;
+	case 1:
+		output(0) = 0;
+		break;
+	default:
+		break;
+	}
 
-  count++;
+	count++;
 }
 
-void
-kick::update(DefaultGUIModel::update_flags_t flag)
+void kick::update(DefaultGUIModel::update_flags_t flag)
 {
-  switch (flag)
-    {
-  case INIT:
-    setParameter("Amplitude", QString::number(amplitude));
-    setParameter("Delay (ms)", QString::number(delay * 1e3)); // display in ms
-    break;
-  case MODIFY:
-    amplitude = getParameter("Amplitude").toDouble();
-    delay = getParameter("Delay (ms)").toDouble() * 1e-3; // convert to s
-    break;
-  case PERIOD:
-    dt = RT::System::getInstance()->getPeriod() * 1e-9; // time in seconds
-  case PAUSE:
-    output(0) = 0.0;
-    state = 0;
-    break;
-  case UNPAUSE:
-    systime = 0;
-    count = 0;
-    break;
-  default:
-    break;
-    }
+	switch (flag)
+	{
+	case INIT:
+		setParameter("Amplitude", QString::number(amplitude));
+		setParameter("Delay (ms)", QString::number(delay * 1e3)); // display in ms
+		break;
+	case MODIFY:
+		amplitude = getParameter("Amplitude").toDouble();
+		delay = getParameter("Delay (ms)").toDouble() * 1e-3; // convert to s
+		break;
+	case PERIOD:
+		dt = RT::System::getInstance()->getPeriod() * 1e-9; // time in seconds
+		break;
+	case PAUSE:
+		output(0) = 0.0;
+		state = 0;
+		break;
+	case UNPAUSE:
+		systime = 0;
+		count = 0;
+		break;
+	default:
+		break;
+	}
 }
 
-void
-kick::initParameters()
+void kick::initParameters()
 {
-  amplitude = 1;
-  delay = 0.2; // initialized in s
-  dt = RT::System::getInstance()->getPeriod() * 1e-9; // time in seconds
-  state = 0;
+	amplitude = 1;
+	delay = 0.2; // initialized in s
+	dt = RT::System::getInstance()->getPeriod() * 1e-9; // time in seconds
+	state = 0;
 }
-

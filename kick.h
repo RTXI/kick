@@ -28,30 +28,23 @@
 class kick : public DefaultGUIModel
 {
 
-public:
+	public:
+		kick(void);
+		virtual ~kick(void);
 
-  kick(void);
-  virtual
-  ~kick(void);
+		virtual void execute(void);
 
-  virtual void
-  execute(void);
+	protected:
+		virtual void update(DefaultGUIModel::update_flags_t);
 
-protected:
+	private:
+		void initParameters();
 
-  virtual void
-  update(DefaultGUIModel::update_flags_t);
+		double amplitude;
+		double delay;
+		int state;
 
-private:
-
-  void
-  initParameters();
-
-  double amplitude;
-  double delay;
-  int state;
-
-  double dt; // system period
-  double systime;
-  long long count;
+		double dt; // system period
+		double systime;
+		long long count;
 };
