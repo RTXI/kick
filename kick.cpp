@@ -47,7 +47,7 @@ kick::kick(void) : DefaultGUIModel("Kick", ::vars, ::num_vars)
 	initParameters();
 	update(INIT);
 	refresh();
-	QTimer::singleShot(0, this, SLOT(resizeMe()));
+	resizeMe();
 }
 
 kick::~kick(void)
